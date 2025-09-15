@@ -2,14 +2,6 @@ import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,20 +13,28 @@ export const AuthProvider = ({ children }) => {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // API call to backend
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Store token in localStorage
+      localStorage.setItem('token', data.data.token);
       
-      // Mock user data
-      const userData = {
-        id: '1',
-        name: email.split('@')[0], // Use email prefix as name
-        email: email
-      };
-      
-      setUser(userData);
-      return userData;
+      setUser(data.data.user);
+      return data.data.user;
     } catch (error) {
-      throw new Error('Invalid credentials');
+      throw new Error(error.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -55,19 +55,28 @@ export const AuthProvider = ({ children }) => {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // API call to backend
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Store token in localStorage
+      localStorage.setItem('token', data.data.token);
       
-      const userData = {
-        id: Date.now().toString(),
-        name: name,
-        email: email
-      };
-      
-      setUser(userData);
-      return userData;
+      setUser(data.data.user);
+      return data.data.user;
     } catch (error) {
-      throw new Error('Registration failed');
+      throw new Error(error.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +84,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('token');
   };
 
   const value = {
@@ -91,4 +101,13 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Export the hook as a separate named export
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
