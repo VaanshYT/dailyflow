@@ -1,13 +1,16 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import DailyTasks from '../components/tasks/DailyTasks';
 
 const Dashboard = () => {
   const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        
+        {/* Your existing welcome section */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <h1 className="text-3xl font-bold text-black mb-4">Dashboard</h1>
           <p className="text-gray-600 mb-8">Welcome to your dashboard, {user?.name}!</p>
           
@@ -65,6 +68,11 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* NEW: Daily Tasks Section */}
+        <div className="bg-white rounded-2xl shadow-lg">
+          <DailyTasks />
         </div>
       </div>
     </div>

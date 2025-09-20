@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/database');
+const taskRoutes = require('./routes/tasks');
 require('dotenv').config();
 
 const app = express();
@@ -25,7 +26,8 @@ app.use(express.json());
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/leetcode', require('./routes/leetcodeProxy'));
+app.use('/api/leetcode', require('./routes/leetcodeProxy')); // Your LeetCode route
+app.use('/api/tasks', taskRoutes); // Vansh’s Tasks route
 
 // Basic root route
 app.get('/', (req, res) => {
@@ -40,7 +42,6 @@ app.use((err, req, res, next) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
