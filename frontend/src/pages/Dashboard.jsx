@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import DailyTasks from '../components/tasks/DailyTasks';
+import HabitTracker from '../components/habits/HabitTracker';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -74,8 +75,12 @@ const Dashboard = () => {
         <div className="bg-white rounded-2xl shadow-lg">
           <DailyTasks />
         </div>
+        <div className="bg-white rounded-2xl shadow-lg mt-8">
+          <HabitTracker />
+        </div>
       </div>
     </div>
+    
   );
 };
 
