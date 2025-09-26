@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Check, Edit3, Trash2, Calendar, Clock, CheckCircle2, Circle, Target, TrendingUp, Search, Filter } from 'lucide-react';
 
-const DailyTasks = () => {
+const DailyTasks = ({ onStatsUpdate }) => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -235,6 +235,12 @@ const DailyTasks = () => {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.completed).length;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  useEffect(() => {
+  if (onStatsUpdate) {
+    onStatsUpdate({ totalTasks, completedTasks, completionRate });
+  }
+}, [totalTasks, completedTasks, completionRate, onStatsUpdate]);
 
   // Handle Enter key press
   const handleKeyPress = (e) => {
